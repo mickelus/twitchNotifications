@@ -1,0 +1,34 @@
+{
+  "manifest_version": 2,
+
+  "name": "Twitch Notifications",
+  "description": "This extension notifies you when someone you are following starts streaming.",
+  "version": "1.0",
+
+  "content_security_policy": "image-src 'self' *://static-cdn.jtvnw.net/*; object-src 'self'; script-src 'self'",
+
+  "permissions": [
+    "alarms",
+    "storage",
+    "notifications",
+    "tabs",
+    "*://api.twitch.tv/*",
+    "*://static-cdn.jtvnw.net/*"
+  ],
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+
+  "options_page": "options.html",
+
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": false
+  }
+  
+}
