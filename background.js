@@ -175,6 +175,7 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
   })
 });
 
+// Open options page when installed
 chrome.runtime.onInstalled.addListener(function(details){
 	if(details.reason === "install") {
 		chrome.runtime.openOptionsPage();
