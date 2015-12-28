@@ -8,10 +8,10 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "This extension notifies you when someone you are following starts streaming."
+		"message": "Notifies you when one of the streamers you are following starts streaming."
 	},
 	"optionsTitle": {
-		"message": "$twitch$ notifications options",
+		"message": "$twitch$ Notifications: Options",
 		"placeholders": {
 			"twitch": {
 				"content": "Twitch"
@@ -19,7 +19,7 @@
 		}
 	},
 	"optionsHeading": {
-		"message": "$twitch$ notifications",
+		"message": "$twitch$ Notifications",
 		"placeholders": {
 			"twitch": {
 				"content": "Twitch"
@@ -27,10 +27,10 @@
 		}
 	},
 	"optionsSubheading": {
-		"message": "options"
+		"message": "Options"
 	},
 	"optionsExplaination": {
-		"message": "We would like to notify you when your favourite $twitch$ streamers go live and all we need is your $twitch$ username, please use the input field below.",
+		"message": "To be able to notify you the extension needs your $twitch$ username.",
 		"placeholders": {
 			"twitch": {
 				"content": "Twitch"
@@ -41,10 +41,10 @@
 		"message": "Username has been unset."
 	},
 	"optionsUsernameInputLabel": {
-		"message": "username"
+		"message": "Username"
 	},
 	"optionsUsernameSubmit": {
-		"message": "submit"
+		"message": "Submit"
 	},
 	"optionsUsernameSet": {
 		"message": "Username has been set."
