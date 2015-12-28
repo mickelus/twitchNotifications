@@ -19,13 +19,23 @@
 		}
 	},
 	"optionsHeading": {
-		"message": "Twitch notifications"
+		"message": "$twitch$ notifications",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
 	},
 	"optionsSubheading": {
 		"message": "options"
 	},
 	"optionsExplaination": {
-		"message": "We would like to notify you when your favourite twitch streamers go live and all we need is your twitch username, please use the input field below."
+		"message": "We would like to notify you when your favourite $twitch$ streamers go live and all we need is your $twitch$ username, please use the input field below.",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
 	},
 	"optionsUsernameUnset": {
 		"message": "Username has been unset."
