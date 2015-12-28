@@ -1,17 +1,64 @@
-var REQUEST_PATH_USER = "https://api.twitch.tv/kraken/users/{user}";
+const REQUEST_PATH_USER = "https://api.twitch.tv/kraken/users/{user}";
 
-var hideTimeout;
+var usernameInput = document.querySelector("#username");
+var applyButton = document.querySelector("#apply");
+var usernameCheckStatusSpan = document.querySelector("#usernameCheckStatus");
+var savedUsername = "";
+usernameInput.value = chrome.i18n.getMessage("optionsUsernameLoading");
 
-chrome.storage.sync.get("username", function(values) {
-	if(values["username"] != undefined) {
-		document.querySelector("#nameInput").value = values["username"];
+// If enter is pressed in input, click done
+usernameInput.addEventListener("keypress",function(event){
+	if(event.keyIdentifier == "Enter") {
+		applyButton.click();
 	}
+});
+usernameInput.addEventListener("keyup",function(){
+	applyButton.disabled = !this.checkValidity() || this.value === savedUsername;
+});
+
+applyButton.addEventListener("click",function(){
+	applyButton.disabled = true;
+	usernameCheckStatusSpan.style.color = "blue";
+	var username = usernameInput.value;
+	if(username === "") {
+		chrome.storage.sync.remove("username");
+		usernameCheckStatusSpan.innerText = chrome.i18n.getMessage("optionsUsernameRemoved");
+		return;
+	}else{
+		usernameInput.disabled = true;
+		usernameCheckStatusSpan.innerText = chrome.i18n.getMessage("optionsChecking");
+	}
+	checkUsername(username,function(valid,data){
+		usernameInput.disabled = false;
+		if(valid) {
+			usernameInput.value = data.display_name;
+			username = data.display_name;
+			chrome.storage.sync.set({"username" : username})
+			usernameCheckStatusSpan.innerText = chrome.i18n.getMessage("optionsUsernameSet");
+			usernameCheckStatusSpan.style.color = "green";
+		}else{
+			chrome.storage.sync.remove("username");
+			if(data.message == "User '" + username + "' does not exist") {
+				data.message = chrome.i18n.getMessage("errorUserDoesNotExist",username);
+			}else if(data.message == "User '" + username + "' is unavailable"){
+				data.message = chrome.i18n.getMessage("errorUserNotAvailable",username);
+			}
+			usernameCheckStatusSpan.innerText = chrome.i18n.getMessage("errorMessage",data.message);
+			usernameCheckStatusSpan.style.color = "red";
+			usernameInput.focus();
+			usernameInput.select();
+		}
+	});
+});
+
+// Get saved username
+chrome.storage.sync.get("username", function(values) {
+	savedUsername = (values["username"] === undefined? "" : values["username"]);
+	usernameInput.value = savedUsername;
+	usernameInput.disabled = false;
 })
 
-var nameSubmit = document.querySelector("#nameSubmit");
-nameSubmit.addEventListener("click", submitUsername);
 
-nameSubmit.value = chrome.i18n.getMessage("optionsUsernameSubmit");
 
 // populates elements with a message attribute
 var messageAttributeElements = document.querySelectorAll("[message]");
@@ -19,74 +66,23 @@ for(var i = 0;i < messageAttributeElements.length;i++) {
 	messageAttributeElements[i].innerText = chrome.i18n.getMessage(messageAttributeElements[i].getAttribute("message"));
 }
 
-// checks if the username in the username input is valid and stores it in local storage
-function submitUsername() {
-
-	var username = document.querySelector("#nameInput").value;
-	
-	if(username == "") {
-
-		showMessage(chrome.i18n.getMessage("optionsUsernameUnset"));
-
-		chrome.storage.sync.remove("username");
-
-	} else {
-		var request = new XMLHttpRequest();
-		var json;
-
-		request.open("GET", REQUEST_PATH_USER.replace("{user}", username), true);
-		request.send();
-
-		request.onreadystatechange = function() {
-			if(request.readyState == 4 ) {
-				console.log("aasd");
-				console.log(request.responseText)
-				json = JSON.parse(request.responseText);
-
-				if(json["error"] == undefined) {
-					
-					showMessage(chrome.i18n.getMessage("optionsUsernameSet"));
-
-					chrome.storage.sync.set({"username" : username})
-
-				} else {
-
-					showMessage(chrome.i18n.getMessage("optionsUserNotFound"));
-
-					chrome.storage.sync.remove("username");
-				}
-			}
+function checkUsername(username,callback) {
+	var request = new XMLHttpRequest();
+	request.addEventListener("load",function(){
+		try {
+			json = JSON.parse(request.responseText);
+		}catch(e){
+			console.log("Error: ",e);
+			callback(false,e);
+			return;
 		}
-
-		
-	}
+		console.log(json);
+		if(json["error"] === undefined) {
+			callback(true,json);
+		}else{
+			callback(false,json);
+		}
+	});
+	request.open("GET", REQUEST_PATH_USER.replace("{user}", username));
+	request.send();
 }
-
-// shows a message below the username input, color is optional and will default to black
-function showMessage(message, color) {
-	var messageContainer = document.querySelector("#messageContainer");
-	var textNode = document.createTextNode(message);
-
-	while (messageContainer.firstChild) {
-	    messageContainer.removeChild(messageContainer.firstChild);
-	}
-	
-	messageContainer.appendChild(textNode);
-	
-
-	if(color != undefined) {
-		messageContainer.style.color = color;
-	} else {
-		messageContainer.style.color = "black";
-	}
-
-	messageContainer.style.opacity = 1;
-
-	if(hideTimeout != undefined) {
-		clearTimeout(hideTimeout);
-	}
-	hideTimeout = setTimeout(function() {
-		messageContainer.style.opacity = 0;
-	}, 7000);
-}
-

@@ -10,47 +10,52 @@
 	"extensionDescription": {
 		"message": "Notifies you when one of the streamers you are following starts streaming."
 	},
-	"optionsTitle": {
-		"message": "$twitch$ Notifications: Options",
+	"optionsUsernameLabel": {
+		"message": "$twitch$ username",
 		"placeholders": {
 			"twitch": {
 				"content": "Twitch"
 			}
 		}
 	},
-	"optionsHeading": {
-		"message": "$twitch$ Notifications",
-		"placeholders": {
-			"twitch": {
-				"content": "Twitch"
-			}
-		}
-	},
-	"optionsSubheading": {
-		"message": "Options"
-	},
-	"optionsExplaination": {
-		"message": "To be able to notify you the extension needs your $twitch$ username.",
-		"placeholders": {
-			"twitch": {
-				"content": "Twitch"
-			}
-		}
-	},
-	"optionsUsernameUnset": {
-		"message": "Username has been unset."
-	},
-	"optionsUsernameInputLabel": {
-		"message": "Username"
-	},
-	"optionsUsernameSubmit": {
-		"message": "Submit"
+	"optionsUsernameChecking": {
+		"message": "Checking..."
 	},
 	"optionsUsernameSet": {
-		"message": "Username has been set."
+		"message": "Set!"
 	},
-	"optionsUserNotFound": {
-		"message": "Could not find the specified user."
+	"optionsUsernameRemoved": {
+		"message": "Removed."
+	},
+	"errorMessage": {
+		"message": "Error: $error$",
+		"placeholders": {
+			"error": {
+				"content": "$1",
+				"example": "User 'doesntexistqqqq' does not exist"
+			}
+		}
+	},
+	"errorUserDoesNotExist": {
+		"message": "User '$name$' does not exist",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "doesntexistqqqq"
+			}
+		}
+	},
+	"errorUserUnavailable": {
+		"message": "User '$name$' is not available",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "test"
+			}
+		}
+	},
+	"optionsDone": {
+		"message": "Done"
 	},
 	"notificationTitle": {
 		"message": "$name$ is now playing $game$",

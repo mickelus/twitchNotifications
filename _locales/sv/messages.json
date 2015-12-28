@@ -10,47 +10,52 @@
 	"extensionDescription": {
 		"message": "Meddelar dig när någon av dina streamare börjar streama."
 	},
-	"optionsTitle": {
-		"message": "$twitch$-notifikationer: Alternativ",
+	"optionsUsernameLabel": {
+		"message": "$twitch$-användarnamn",
 		"placeholders": {
 			"twitch": {
 				"content": "Twitch"
 			}
 		}
 	},
-	"optionsHeading": {
-		"message": "$twitch$-notifikationer",
-		"placeholders": {
-			"twitch": {
-				"content": "Twitch"
-			}
-		}
-	},
-	"optionsSubheading": {
-		"message": "Alternativ"
-	},
-	"optionsExplaination": {
-		"message": "För att kunna meddela dig behöver det här tillägget ditt $twitch$-användarnamn.",
-		"placeholders": {
-			"twitch": {
-				"content": "Twitch"
-			}
-		}
-	},
-	"optionsUsernameUnset": {
-		"message": "Användernamn borttaget"
-	},
-	"optionsUsernameInputLabel": {
-		"message": "Användernamn"
-	},
-	"optionsUsernameSubmit": {
-		"message": "Sätt"
+	"optionsUsernameChecking": {
+		"message": "Kollar..."
 	},
 	"optionsUsernameSet": {
-		"message": "Användarnamn satt."
+		"message": "Satt!"
 	},
-	"optionsUserNotFound": {
-		"message": "Kan inte hitta den angivna användaren."
+	"optionsUsernameRemoved": {
+		"message": "Borttaget."
+	},
+	"errorMessage": {
+		"message": "Fel: $error$",
+		"placeholders": {
+			"error": {
+				"content": "$1",
+				"example": "User 'doesntexistqqqq' does not exist"
+			}
+		}
+	},
+	"errorUserDoesNotExist": {
+		"message": "Användare '$name$' finns inte",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "doesntexistqqqq"
+			}
+		}
+	},
+	"errorUserUnavailable": {
+		"message": "Användare '$name$' är inte tillgänglig",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "test"
+			}
+		}
+	},
+	"optionsDone": {
+		"message": "Klar"
 	},
 	"notificationTitle": {
 		"message": "$name$ spelar nu $game$",

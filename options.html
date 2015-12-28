@@ -5,19 +5,9 @@
 		<link rel="stylesheet" href="options.css" type="text/css">
 	</head>
 	<body>
-	<section>
-		<header>
-			<h1 message="optionsHeading"></h1>
-			<h2 message="optionsSubheading"></h2>
-			<img src="icon256.png">
-			<p message="optionsExplaination"></p>
-		</header>
-		<div id="inputDiv">
-			<div id="labelBGDiv"></div>
-			<label for="nameInput" message="optionsUsernameInputLabel"></label>
-			<input id="nameInput" type="text">
-			<input id="nameSubmit" type="submit">
-			<p id="messageContainer"></p>
-		</div>
+		<label message="optionsUsernameLabel" for="username"></label>
+		<input type="text" name="username" id="username" pattern="^(?:[a-zA-Z0-9][a-zA-Z0-9_]{3,25}|)$" disabled>
+		<span id="usernameCheckStatus"></span>
+		<button id="apply" message="optionsDone" disabled></button>
 	</body>
 </html>
