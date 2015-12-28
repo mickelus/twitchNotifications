@@ -1,179 +1,159 @@
-var REQUEST_PATH_FOLLOWS = "https://api.twitch.tv/kraken/users/{user}/follows/channels";
-var REQUEST_DATA_FOLLOWS = "direction=DESC&limit=25&offset={offset}";
+const REQUEST_ROOT = "https://api.twitch.tv/kraken";
+const REQUEST_PATH_FOLLOWS = REQUEST_ROOT + "/users/{user}/follows/channels";
+const REQUEST_PATH_STREAMS = REQUEST_ROOT + "/streams?channel={channels}";
+const CLIENT_ID = "gevhsubto5cnilf3uwcl5ws5lcrqmx8";
 
-var REQUEST_PATH_CHANNEL = "https://api.twitch.tv/kraken/streams?channel={channel}";
-
-var USER_KEY = "username";
-var CLIENT_ID = "gevhsubto5cnilf3uwcl5ws5lcrqmx8";
-var activeChannels =  [];
-
-// gets all channels followed by the user that is currently streaming
-function getFollowedChannels(username) {
-
-	var result = [];
-
-	var offset = 0;
-	var count = 0;
-
-	do {
-		var json;
-		var followsRequest = new XMLHttpRequest();
-
-		followsRequest.open("GET", REQUEST_PATH_FOLLOWS.replace("{user}", encodeURI(username)), false);
-		followsRequest.send(REQUEST_DATA_FOLLOWS.replace("{offset}", offset));
-
-		json = JSON.parse(followsRequest.responseText);
-
-		count = json["_total"];
-		offset += count;
-
-		var channels = json["follows"];
-		var channelNames = [];
-		for (var i = 0; i < channels.length; i++) {
-			channelNames.push(channels[i]["channel"]["name"]);
-		};
-
-		var streamingRequest = new XMLHttpRequest();
-
-		streamingRequest.open("GET", REQUEST_PATH_CHANNEL.replace("{channel}", encodeURI(channelNames)), false);
-		streamingRequest.send();
-
-		json = JSON.parse(streamingRequest.responseText);
-
-		result.push.apply(result, json["streams"]);
-
-	} while(count >= 25);
-
-	return result;
+function resetSessionOnlyItems() {
+	window.localStorage.notificationURLs = "{}";
 }
 
-// notifies the user with a chrome notification box
-function notifyUser(channelData) {
-
-
-	var title = chrome.i18n.getMessage("notificationTitle", [channelData["display_name"], channelData["game"]]);
-
-	if(webkitNotifications.createHTMLNotification == undefined) {
-		var options = {
-			"type"		: "basic",
-			"title"		: title,
-			"message"	: channelData["status"],
-			"iconUrl"	: channelData["logo"],
-		}
-
-
-		/*var imageRequest = new XMLHttpRequest();
-		imageRequest.open("GET", channelData["logo"]);
-		imageRequest.responseType = "blob";
-		imageRequest.onload = function(){
-		        var blob = this.response;
-		        options.iconUrl = window.URL.createObjectURL(blob);
-		        chrome.notifications.create((new Date()).toString(), options, function(){});
-		    };
-		imageRequest.send(null);*/
-		chrome.notifications.create(channelData["_id"].toString(), options, function(){});
-	} else {
-		var notification = webkitNotifications.createNotification(
-			channelData["logo"],
-			title,
-			channelData["status"]
-		);
-		var url = channelData["url"];
-		notification.onclick = function() {
-			chrome.tabs.create({ "url" : url});
-			notification.close();
-		}
-		notification.show();
-	}
-
-	
-}
-
-// set up listener to open clicked streams
-chrome.notifications.onClicked.addListener(function(notificationID) {
-	for (i = 0; i < activeChannels.length; i++) {
-		if(activeChannels[i]["channel"]["_id"] == notificationID ) {
-			chrome.notifications.clear(notificationID, function() {});
-			chrome.tabs.create({ "url" : activeChannels[i]["channel"]["url"]});
-			
-		}
-	};
-})
-
-
-// init channels
-chrome.storage.sync.get(USER_KEY, function(result) {
-	var username = result[USER_KEY];
-
-	if(username != undefined) {
-		activeChannels = getFollowedChannels(username);
-	}
-});
-
-
-// start update alarm
-chrome.alarms.clearAll();
-chrome.alarms.create("update", {periodInMinutes: 1});
-
-
-chrome.alarms.onAlarm.addListener(function(alarm) {
-
-	// get user from storage
-	chrome.storage.sync.get(USER_KEY, function(result) {
-  		var username = result[USER_KEY];
-
-  		if(username != undefined) {
-  			// query active followed streams on twitch
-  			var currentChannels = getFollowedChannels(username);
-
-			// store previously active streams in temp array
-			var tempChannels = activeChannels.slice();
-
-			// for each currently active stream
-			for (var i = 0; i < currentChannels.length; i++) {
-
-				// check if stream was active before
-				var exists = false;
-				var j;
-				for (j = 0; j < tempChannels.length; j++) {
-					if(tempChannels[j]["channel"]["_id"] == currentChannels[i]["channel"]["_id"] ) {
-						exists = true;
-						break;
-					}
-				};
-
-				// stream has started if it was not previously active
-				if(!exists) {
-
-					// add stream to active array
-					activeChannels.push(currentChannels[i]);
-					// notify user about new stream
-					notifyUser(currentChannels[i]["channel"]);
-
-				} else {
-					// remove stream from temp array
-					tempChannels.splice(j, 1);
-
-				}
-
-				
-			};
-
-			// for each stream in temp array
-			for (var i = 0; i < tempChannels.length; i++) {
-
-				// remove from active array
-				var index = activeChannels.indexOf(tempChannels[i]);
-				activeChannels.splice(index, 1);
-			};
-  		}
-
-  })
-});
-
-// Open options page when installed
+// Open options page and reset notification URLs when installed
 chrome.runtime.onInstalled.addListener(function(details){
+	resetSessionOnlyItems();
 	if(details.reason === "install") {
 		chrome.runtime.openOptionsPage();
 	}
+});
+
+// Reset notification URLs on startup
+chrome.runtime.onStartup.addListener(function(){
+	resetSessionOnlyItems();
+});
+
+// Makes a GET request to 'url' and parses it as JSON
+function getJSON(url,callback) {
+	var request = new XMLHttpRequest();
+	request.addEventListener("load",function(){
+		try {
+			var json = JSON.parse(this.responseText);
+		}catch(e){
+			callback(false,e);
+			return;
+		}
+		callback(true,json);
+	});
+	request.addEventListener("error",function(){
+		callback(false);
+	});
+	request.open("GET",url);
+	request.send();
+}
+
+function getFollowedChannels(username,callback) {
+	console.log("Getting followed channels");
+	chrome.storage.sync.get({maxFollowsAge:1},function(items){
+		if(((Date.now() - parseInt(window.localStorage.followedChannelsLastUpdated)) > items.maxFollowsAge * 60 * 60 * 1000) || !window.localStorage.followedChannels) {
+			console.log("Cached channels too old, updating them...");
+			var follows = [];
+			function followsReponse(success,data){
+				if(success) {
+					if(data.follows.length === 0) {
+						var channelNames = [];
+						for(var i = 0;i < follows.length;i++) {
+							channelNames.push(follows[i].channel.name);
+						}
+						window.localStorage.followedChannels = JSON.stringify(channelNames);
+						window.localStorage.followedChannelsLastUpdated = Date.now();
+						console.log("Got fresh list of followed channels");
+						callback(true,channelNames);
+					}else{
+						for(var i = 0;i < data.follows.length;i++) {
+							follows.push(data.follows[i]);
+						}
+						getJSON(data._links.next,followsReponse);
+					}
+				}else{
+					console.error("Error in followed channels request response",data);
+					callback(false,data);
+				}
+			}
+			getJSON(REQUEST_PATH_FOLLOWS.replace("{user}",username),followsReponse);
+		}else{
+			console.log("Cached channels are young enough, using them");
+			callback(true,JSON.parse(window.localStorage.followedChannels));
+		}
+	});
+}
+
+// Get user's followed channels who are streaming
+function getStreamingChannels(username,callback) {
+	console.group("Getting followed channels currently streaming...");
+	getFollowedChannels(username,function(success,data){
+		if(success){
+			console.log("Getting streams...");
+			var channelNames = data;
+			var streams = [];
+			function streamsReponse(success,data){
+				if(success) {
+					if(data.streams.length === 0) {
+						console.log("Got streams");
+						console.groupEnd();
+						callback(true,streams);
+						window.localStorage.streamsLastChecked = Date.now();
+					}else{
+						for(var i = 0;i < data.streams.length;i++) {
+							// Convert date string to milliseconds since midnight the 1st January 1970
+							data.streams[i].created_at = Date.parse(data.streams[i].created_at);
+							streams.push(data.streams[i]);
+						}
+						getJSON(data._links.next,streamsReponse);
+					}
+				}else{
+					console.groupEnd();
+					callback(false,data);
+				}
+			}
+			getJSON(REQUEST_PATH_STREAMS.replace("{channels}",channelNames.join(",")),streamsReponse);
+		}
+	});
+}
+
+// Notify the user
+function notifyUser(stream) {
+	console.log("Creating notification for ", stream);
+	chrome.notifications.create({
+		type:"image",
+		iconUrl:stream.channel.logo,
+		imageUrl:stream.preview.large,
+		title:chrome.i18n.getMessage("notificationTitle",[stream.channel.display_name,stream.game]),
+		message: stream.channel.status,
+		eventTime:stream.created_at
+	}, function(id){
+		console.log("Nofication with ID " + id + " created.");
+		var notificationURLs = JSON.parse(window.localStorage.notificationURLs);
+		notificationURLs[id] = stream.channel.url;
+		window.localStorage.notificationURLs = JSON.stringify(notificationURLs);
+	});
+}
+
+// Open link to stream when notification is clicked
+chrome.notifications.onClicked.addListener(function(notificationID) {
+	chrome.tabs.create({url:JSON.parse(window.localStorage.notificationURLs)[notificationID]},function(){
+		chrome.notifications.clear(notificationID);
+	});
+})
+
+// Start update alarm
+chrome.alarms.create("update", {periodInMinutes: 3});
+chrome.alarms.onAlarm.addListener(function(alarm) {
+	chrome.storage.sync.get("username", function(result) {
+		console.log("Username: \"" + result.username + "\"");
+  		if(result.username) {
+			getStreamingChannels(result.username,function(success,data){
+				if(success){
+					var streamsLastChecked = parseInt(window.localStorage.streamsLastChecked) || (window.localStorage.streamsLastChecked = 0);
+					var createdNotifications = {};
+					for(var i = 0;i < data.length;i++) {
+						console.log("Checking if " + data[i].channel.display_name + "'s stream started after streams were last checked");
+						if(data[i].created_at > streamsLastChecked) {
+							console.log("It was");
+							notifyUser(data[i]);
+						}else{
+							console.log("It wasn't");
+						}
+					}
+				}
+			});
+  		}
+  	});
 });
