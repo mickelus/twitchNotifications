@@ -1,0 +1,58 @@
+{
+	"extensionName": {
+		"message": "$twitch$ Notifications",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"extensionDescription": {
+		"message": "This extension notifies you when someone you are following starts streaming."
+	},
+	"optionsTitle": {
+		"message": "$twitch$ notifications options",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"optionsHeading": {
+		"message": "Twitch notifications"
+	},
+	"optionsSubheading": {
+		"message": "options"
+	},
+	"optionsExplaination": {
+		"message": "We would like to notify you when your favourite twitch streamers go live and all we need is your twitch username, please use the input field below."
+	},
+	"optionsUsernameUnset": {
+		"message": "Username has been unset."
+	},
+	"optionsUsernameInputLabel": {
+		"message": "username"
+	},
+	"optionsUsernameSubmit": {
+		"message": "submit"
+	},
+	"optionsUsernameSet": {
+		"message": "Username has been set."
+	},
+	"optionsUserNotFound": {
+		"message": "Could not find the specified user."
+	},
+	"notificationTitle": {
+		"message": "$name$ is now playing $game$",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "summit1g"
+			},
+			"game": {
+				"content": "$2",
+				"example": "Grand Theft Auto V"
+			}
+		}
+	}
+}

@@ -3,8 +3,6 @@ var REQUEST_DATA_FOLLOWS = "direction=DESC&limit=25&offset={offset}";
 
 var REQUEST_PATH_CHANNEL = "https://api.twitch.tv/kraken/streams?channel={channel}";
 
-var NOTIFICATION_TITLE = "{name} is now playing {game}";
-
 var USER_KEY = "username";
 var CLIENT_ID = "gevhsubto5cnilf3uwcl5ws5lcrqmx8";
 var activeChannels =  [];
@@ -53,9 +51,7 @@ function getFollowedChannels(username) {
 function notifyUser(channelData) {
 
 
-	var title = NOTIFICATION_TITLE;
-	title = title.replace("{name}", channelData["display_name"]);
-	title = title.replace("{game}", channelData["game"]);
+	var title = chrome.i18n.getMessage("notificationTitle", [channelData["display_name"], channelData["game"]]);
 
 	if(webkitNotifications.createHTMLNotification == undefined) {
 		var options = {

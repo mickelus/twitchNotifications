@@ -1,8 +1,9 @@
 {
   "manifest_version": 2,
+  "default_locale": "en",
 
-  "name": "Twitch Notifications",
-  "description": "This extension notifies you when someone you are following starts streaming.",
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
   "version": "1.0",
 
   "content_security_policy": "image-src 'self' *://static-cdn.jtvnw.net/*; object-src 'self'; script-src 'self'",

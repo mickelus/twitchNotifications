@@ -6,10 +6,18 @@ chrome.storage.sync.get("username", function(values) {
 	if(values["username"] != undefined) {
 		document.querySelector("#nameInput").value = values["username"];
 	}
-	
 })
-document.querySelector("#nameSubmit").addEventListener("click", submitUsername);
 
+var nameSubmit = document.querySelector("#nameSubmit");
+nameSubmit.addEventListener("click", submitUsername);
+
+nameSubmit.value = chrome.i18n.getMessage("optionsUsernameSubmit");
+
+// populates elements with a message attribute
+var messageAttributeElements = document.querySelectorAll("[message]");
+for(var i = 0;i < messageAttributeElements.length;i++) {
+	messageAttributeElements[i].innerText = chrome.i18n.getMessage(messageAttributeElements[i].getAttribute("message"));
+}
 
 // checks if the username in the username input is valid and stores it in local storage
 function submitUsername() {
@@ -18,7 +26,7 @@ function submitUsername() {
 	
 	if(username == "") {
 
-		showMessage("Username has been unset.");
+		showMessage(chrome.i18n.getMessage("optionsUsernameUnset"));
 
 		chrome.storage.sync.remove("username");
 
@@ -37,13 +45,13 @@ function submitUsername() {
 
 				if(json["error"] == undefined) {
 					
-					showMessage("Username has been set.");
+					showMessage(chrome.i18n.getMessage("optionsUsernameSet"));
 
 					chrome.storage.sync.set({"username" : username})
 
 				} else {
 
-					showMessage("Could not find the specified user.");
+					showMessage(chrome.i18n.getMessage("optionsUserNotFound"));
 
 					chrome.storage.sync.remove("username");
 				}
