@@ -1,0 +1,68 @@
+{
+	"extensionName": {
+		"message": "$twitch$-notifikationer",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"extensionDescription": {
+		"message": "Meddelar dig när någon av dina streamare börjar streama."
+	},
+	"optionsTitle": {
+		"message": "$twitch$-notifikationer: Alternativ",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"optionsHeading": {
+		"message": "$twitch$-notifikationer",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"optionsSubheading": {
+		"message": "Alternativ"
+	},
+	"optionsExplaination": {
+		"message": "För att kunna meddela dig behöver det här tillägget ditt $twitch$-användarnamn.",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"optionsUsernameUnset": {
+		"message": "Användernamn borttaget"
+	},
+	"optionsUsernameInputLabel": {
+		"message": "Användernamn"
+	},
+	"optionsUsernameSubmit": {
+		"message": "Sätt"
+	},
+	"optionsUsernameSet": {
+		"message": "Användarnamn satt."
+	},
+	"optionsUserNotFound": {
+		"message": "Kan inte hitta den angivna användaren."
+	},
+	"notificationTitle": {
+		"message": "$name$ spelar nu $game$",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "summit1g"
+			},
+			"game": {
+				"content": "$2",
+				"example": "Grand Theft Auto V"
+			}
+		}
+	}
+}
