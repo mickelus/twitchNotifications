@@ -13,7 +13,7 @@ usernameInput.addEventListener("keypress",function(event){
 	}
 });
 usernameInput.addEventListener("keyup",function(){
-	applyButton.disabled = !this.checkValidity() || this.value === savedUsername;
+	applyButton.disabled = !this.checkValidity() || this.value.toLowerCase() === savedUsername.toLowerCase();
 });
 
 applyButton.addEventListener("click",function(){
@@ -33,6 +33,7 @@ applyButton.addEventListener("click",function(){
 		if(valid) {
 			usernameInput.value = data.display_name;
 			username = data.display_name;
+			savedUsername = data.display_name;
 			chrome.storage.sync.set({"username" : username})
 			usernameCheckStatusSpan.innerText = chrome.i18n.getMessage("optionsUsernameSet");
 			usernameCheckStatusSpan.style.color = "green";
@@ -52,10 +53,25 @@ applyButton.addEventListener("click",function(){
 });
 
 // Get saved username
-chrome.storage.sync.get("username", function(values) {
-	savedUsername = (values["username"] === undefined? "" : values["username"]);
-	usernameInput.value = savedUsername;
-	usernameInput.disabled = false;
+chrome.storage.sync.get("username", function(items) {
+	if(items.username === undefined){
+		console.log("Attemping to get username from cookie");
+		chrome.cookies.get({url:"https://api.twitch.tv/",name:"name"},function(cookie){
+			if(cookie){
+				console.log("Got cookie");
+				savedUsername = cookie.value;
+			}else{
+				savedUsername = "";	
+			}
+			usernameInput.value = savedUsername;
+			usernameInput.disabled = false;
+		})
+	}else{
+		console.log("Got saved username");
+		savedUsername = items.username;
+		usernameInput.value = savedUsername;
+		usernameInput.disabled = false;
+	}
 })
 
 
