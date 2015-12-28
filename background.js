@@ -20,6 +20,14 @@ chrome.runtime.onStartup.addListener(function(){
 	resetSessionOnlyItems();
 });
 
+chrome.storage.onChanged.addListener(function(changes,areaName){
+	if(changes.username) {
+		console.log("Username changed, removing followedChannelsLastUpdated and streamsLastChecked timestamps");
+		window.localStorage.removeItem("followedChannelsLastUpdated");
+		window.localStorage.removeItem("streamsLastChecked");
+	}
+});
+
 // Makes a GET request to 'url' and parses it as JSON
 function getJSON(url,callback) {
 	var request = new XMLHttpRequest();
@@ -42,7 +50,7 @@ function getJSON(url,callback) {
 function getFollowedChannels(username,callback) {
 	console.log("Getting followed channels");
 	chrome.storage.sync.get({maxFollowsAge:1},function(items){
-		if(((Date.now() - parseInt(window.localStorage.followedChannelsLastUpdated)) > items.maxFollowsAge * 60 * 60 * 1000) || !window.localStorage.followedChannels) {
+		if(((Date.now() - (parseInt(window.localStorage.followedChannelsLastUpdated) || 0)) > items.maxFollowsAge * 60 * 60 * 1000) || !window.localStorage.followedChannels) {
 			console.log("Cached channels too old, updating them...");
 			var follows = [];
 			function followsReponse(success,data){
