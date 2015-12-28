@@ -21,7 +21,8 @@ applyButton.addEventListener("click",function(){
 	usernameCheckStatusSpan.style.color = "blue";
 	var username = usernameInput.value;
 	if(username === "") {
-		chrome.storage.sync.remove("username");
+		chrome.storage.sync.set({"username" : ""})
+		savedUsername = "";
 		usernameCheckStatusSpan.innerText = chrome.i18n.getMessage("optionsUsernameRemoved");
 		return;
 	}else{
@@ -61,7 +62,7 @@ chrome.storage.sync.get("username", function(items) {
 				console.log("Got cookie");
 				savedUsername = cookie.value;
 			}else{
-				savedUsername = "";	
+				savedUsername = "";
 			}
 			usernameInput.value = savedUsername;
 			usernameInput.disabled = false;
