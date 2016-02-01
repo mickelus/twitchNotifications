@@ -8,7 +8,7 @@
 		}
 	},
 	"extensionDescription": {
-		"message": "Meddelar dig när någon av dina streamare börjar streama."
+		"message": "Meddelar dig när någon av streamarna du följer börjar streama."
 	},
 	"optionsUsernameLabel": {
 		"message": "$twitch$-användarnamn",
