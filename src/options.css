@@ -1,0 +1,16 @@
+label {
+	margin-right: 5px;
+}
+
+input:invalid {
+	background-color: pink;
+}
+
+#apply {
+	display: block;
+	margin-left: auto;
+}
+
+#usernameCheckStatus {
+	white-space: nowrap;
+}

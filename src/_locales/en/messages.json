@@ -1,0 +1,73 @@
+{
+	"extensionName": {
+		"message": "$twitch$ Notifications",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"extensionDescription": {
+		"message": "Notifies you when one of the streamers you are following starts streaming."
+	},
+	"optionsUsernameLabel": {
+		"message": "$twitch$ username",
+		"placeholders": {
+			"twitch": {
+				"content": "Twitch"
+			}
+		}
+	},
+	"optionsUsernameChecking": {
+		"message": "Checking..."
+	},
+	"optionsUsernameSet": {
+		"message": "Set!"
+	},
+	"optionsUsernameRemoved": {
+		"message": "Removed."
+	},
+	"errorMessage": {
+		"message": "Error: $error$",
+		"placeholders": {
+			"error": {
+				"content": "$1",
+				"example": "User 'doesntexistqqqq' does not exist"
+			}
+		}
+	},
+	"errorUserDoesNotExist": {
+		"message": "User '$name$' does not exist",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "doesntexistqqqq"
+			}
+		}
+	},
+	"errorUserUnavailable": {
+		"message": "User '$name$' is not available",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "test"
+			}
+		}
+	},
+	"optionsDone": {
+		"message": "Done"
+	},
+	"notificationTitle": {
+		"message": "$name$ is now playing $game$",
+		"placeholders": {
+			"name": {
+				"content": "$1",
+				"example": "summit1g"
+			},
+			"game": {
+				"content": "$2",
+				"example": "Grand Theft Auto V"
+			}
+		}
+	}
+}
